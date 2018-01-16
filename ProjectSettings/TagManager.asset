@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Physics
+  - FarObject
+  - NoPhysics
+  - FingerTrigger
+  - LeftIndex
+  - RightIndex
+  - Grabable
+  - LeftHand
+  - RightHand
   layers:
   - Default
   - TransparentFX
