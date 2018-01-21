@@ -53,9 +53,8 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
         let panGesture = ThresholdPanGesture(target: self, action: #selector(didPan(_:)))
         panGesture.delegate = self
         
-        
-        let rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(didRotate(_:)))
-        rotationGesture.delegate = self
+        let resizeGesture = UIPinchGestureRecognizer(target: self, action: #selector(didResize(_:)))
+        //resizeGesture.delegate = self
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         
@@ -69,7 +68,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
         
         // Add gestures to the `sceneView`.
         sceneView.addGestureRecognizer(panGesture)
-        sceneView.addGestureRecognizer(rotationGesture)
+        sceneView.addGestureRecognizer(resizeGesture)
         sceneView.addGestureRecognizer(tapGesture)
         sceneView.addGestureRecognizer(doubleTapGesture)
         sceneView.addGestureRecognizer(longPressGesture)
@@ -80,6 +79,8 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
     
     @objc
     func didPan(_ gesture: ThresholdPanGesture) {
+        print("pan recognized")
+        print(status)
         switch status {
         case Status.select:
             switch gesture.state {
@@ -90,6 +91,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 }
                 
             case .changed where gesture.isThresholdExceeded:
+                print("move")
                 guard let object = trackedObject else { return }
                 let translation = gesture.translation(in: sceneView)
                 
@@ -110,8 +112,27 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 trackedObject = nil
             }
         case Status.rotate:
-            print("rotated by \(gesture.translation(in: sceneView).y/10000)")
-            trackedObject?.eulerAngles.y -= Float(gesture.translation(in: sceneView).y/10000)
+            switch gesture.state {
+            case .began:
+                // Check for interaction with a new object.
+                if let object = objectInteracting(with: gesture, in: sceneView) {
+                    trackedObject = object
+                }
+                
+            case .changed:
+                // Ignore changes to the pan gesture until the threshold for displacment has been exceeded.
+                print("rotate")
+                guard let object = trackedObject else { return }
+                let translation = gesture.translation(in: self.sceneView)
+                let degreesHorizontal = CGFloat(0)//translation.x / CGFloat(90)
+                let degreessVertical = translation.y / CGFloat(10)
+                object.rotateObject(degreesHorizontal: degreesHorizontal, degreesVertical: degreessVertical)
+                
+            default:
+                // Clear the current position tracking.
+                currentTrackingPosition = nil
+                trackedObject = nil
+            }
         case .none:
             //do nothing
             break
@@ -171,7 +192,12 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                     status = Status.rotate
                     return
                 }
-                if tappedObject.childNode(withName: "infoButton", recursively: true) == result.node {
+                if tappedObject.childNode(withName: "rotateButtonPlane", recursively: true) == result.node { //Expand clickable surface of rotate button
+                    print("rotate pressed")
+                    status = Status.rotate
+                    return
+                }
+                if tappedObject.childNode(withName: "infoButtonPlane", recursively: true) == result.node {
                     print("info pressed")
                     if showInfo == true {
                         showInfo = false
@@ -187,6 +213,10 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 }
                 if tappedObject.childNode(withName: "copyButton", recursively: true) == result.node {
                     print("copy pressed")
+                    return
+                }
+                if tappedObject.childNode(withName: "collapseButtonPlane", recursively: true) == result.node {
+                    print("collapse pressed")
                     return
                 }
         
@@ -251,6 +281,20 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
         }
     }
     
+    @objc
+    func didResize(_ gesture: UIPinchGestureRecognizer) {
+        print("scale before")
+        guard let object = selectedObject else { return }
+        print("scale after")
+        print(gesture.scale)
+        let scale = Float(gesture.scale / 10)
+        let currentScale = object.scale.x
+        let newScale = scale / currentScale
+        object.scale.x = newScale
+        object.scale.y = newScale
+        object.scale.z = newScale
+    }
+    
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         // Allow objects to be translated and rotated at the same time.
         return true
@@ -299,5 +343,13 @@ extension UIGestureRecognizer {
         }
 
         return CGPoint(x: touchBounds.midX, y: touchBounds.midY)
+    }
+}
+
+extension SCNNode {
+    func rotateObject(degreesHorizontal: CGFloat, degreesVertical: CGFloat) {
+        let rotateAction1 = SCNAction.rotateBy(x: 0, y: CGFloat(degreesVertical * .pi / 180), z: CGFloat(degreesHorizontal * .pi / 180), duration: 0.01)
+        self.runAction(SCNAction.sequence([rotateAction1]))
+        
     }
 }
