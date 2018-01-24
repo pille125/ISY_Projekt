@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		060367782017809000F91D58 /* MBFingerTipWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = 060367762017809000F91D58 /* MBFingerTipWindow.m */; };
 		11BD822A1F09D750003F11C8 /* ViewController+ObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */; };
 		147062641F06FA790003EE03 /* VirtualObjectSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147062631F06FA790003EE03 /* VirtualObjectSelection.swift */; };
 		1488323F1EFC378A0043E0AB /* ViewController+Actions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1488323E1EFC378A0043E0AB /* ViewController+Actions.swift */; };
@@ -29,6 +30,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		060367752017808E00F91D58 /* ARKitInteraction-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ARKitInteraction-Bridging-Header.h"; sourceTree = "<group>"; };
+		060367762017809000F91D58 /* MBFingerTipWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBFingerTipWindow.m; sourceTree = "<group>"; };
+		060367772017809000F91D58 /* MBFingerTipWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBFingerTipWindow.h; sourceTree = "<group>"; };
 		11063F3B1EBE651B0033EE6D /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		147062631F06FA790003EE03 /* VirtualObjectSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualObjectSelection.swift; sourceTree = "<group>"; };
 		147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ViewController+ObjectSelection.swift"; sourceTree = "<group>"; };
@@ -127,12 +131,15 @@
 			isa = PBXGroup;
 			children = (
 				3929C48B1E89EC2C00E00B60 /* AppDelegate.swift */,
+				060367772017809000F91D58 /* MBFingerTipWindow.h */,
+				060367762017809000F91D58 /* MBFingerTipWindow.m */,
 				3929C48D1E89EC2C00E00B60 /* ViewController.swift */,
 				C8C12A701F29277B00B011FE /* ViewController+ARSCNViewDelegate.swift */,
 				1488323E1EFC378A0043E0AB /* ViewController+Actions.swift */,
 				147D76491EFC36070000FEBF /* ViewController+ObjectSelection.swift */,
 				C8C2AC511F3A545C00E86BA3 /* VirtualObjectInteraction.swift */,
 				C812D8671F47628300344E73 /* ThresholdPanGesture.swift */,
+				060367752017808E00F91D58 /* ARKitInteraction-Bridging-Header.h */,
 				C46356661EF9CC480080C8D9 /* VirtualObjectARView.swift */,
 				C40DF57B1EC2330700D9D59E /* Virtual Objects */,
 				113B64D01ECA81CA0071CBD1 /* Focus Square */,
@@ -201,7 +208,7 @@
 					3929C4871E89EC2C00E00B60 = {
 						CreatedOnToolsVersion = 9.0;
 						DevelopmentTeam = PQAK43WUWC;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -256,6 +263,7 @@
 				148832411EFC3B250043E0AB /* FocusSquareSegment.swift in Sources */,
 				C8D71A001F3B7D3D0086AD64 /* VirtualObject.swift in Sources */,
 				C42A71BD1E9C0AF200944367 /* FocusSquare.swift in Sources */,
+				060367782017809000F91D58 /* MBFingerTipWindow.m in Sources */,
 				3929C48C1E89EC2C00E00B60 /* AppDelegate.swift in Sources */,
 				C46356681EF9CC530080C8D9 /* VirtualObjectLoader.swift in Sources */,
 			);
@@ -390,6 +398,7 @@
 			baseConfigurationReference = EDEAD543F9C5D3E64B9CC319 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -401,6 +410,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.arkit-sample-app${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ARKitInteraction/ARKitInteraction-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};
@@ -411,6 +422,7 @@
 			baseConfigurationReference = EDEAD543F9C5D3E64B9CC319 /* SampleCode.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "-";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -422,6 +434,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.example.apple-samplecode.arkit-sample-app${SAMPLE_CODE_DISAMBIGUATOR}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "ARKitInteraction/ARKitInteraction-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 4.0;
 			};

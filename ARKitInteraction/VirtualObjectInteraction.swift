@@ -125,7 +125,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 guard let object = trackedObject else { return }
                 let translation = gesture.translation(in: self.sceneView)
                 let degreesHorizontal = CGFloat(0)//translation.x / CGFloat(90)
-                let degreessVertical = translation.y / CGFloat(10)
+                let degreessVertical = (translation.y / CGFloat(10))
                 object.rotateObject(degreesHorizontal: degreesHorizontal, degreesVertical: degreessVertical)
                 
             default:
@@ -135,6 +135,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
             }
         case .none:
             //do nothing
+            
             break
         case .trigger:
             //do nothing
@@ -180,7 +181,6 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
     func didTap(_ gesture: UITapGestureRecognizer) {
         let touchLocation = gesture.location(in: sceneView)
         
-        
         let hitResults = sceneView.hitTest(touchLocation, options: [:])
         // check that we clicked on at least one object
         if hitResults.count > 0 {
@@ -203,11 +203,13 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                         showInfo = false
                         print("info hidden")
                         tappedObject.parent?.childNode(withName: "infoText", recursively: true)?.isHidden = true
+                        tappedObject.parent?.childNode(withName: "textBox", recursively: true)?.isHidden = true
                         
                     }else {
                         showInfo = true
                         print("info visible")
                         tappedObject.parent?.childNode(withName: "infoText", recursively: true)?.isHidden = false
+                        tappedObject.parent?.childNode(withName: "textBox", recursively: true)?.isHidden = false
                     }
                     return
                 }
@@ -219,28 +221,39 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                     print("collapse pressed")
                     return
                 }
+                if tappedObject.childNode(withName: "crunchFlakes", recursively: true) == result.node {
+                    
+                    // get its material
+                    let materials = result.node.geometry!.materials//.firstMaterial!
+                    
+                    // highlight it
+                    SCNTransaction.begin()
+                    for material in materials {
+                        if (material.emission.contents as! UIColor == UIColor.blue) {
+                            material.emission.contents = UIColor.black
+                            status = Status.none
+                            self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = true
+                            //self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)?.isHidden = true
+                            self.sceneView.scene.rootNode.childNode(withName: "rotateButton", recursively: true)?.isHidden = true
+                            self.sceneView.scene.rootNode.childNode(withName: "rotateButtonPlane", recursively: true)?.isHidden = true
+                        }else if (material.emission.contents as! UIColor == UIColor.red) {
+                            break
+                        }
+                        else if (material.emission.contents as! UIColor == UIColor.black){
+                            material.emission.contents = UIColor.blue
+                            status = Status.select
+                            self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = false
+                            //self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)?.isHidden = false
+                            self.sceneView.scene.rootNode.childNode(withName: "rotateButton", recursively: true)?.isHidden = false
+                            self.sceneView.scene.rootNode.childNode(withName: "rotateButtonPlane", recursively: true)?.isHidden = false
+                        }
+                        
+                    }
+                    SCNTransaction.commit()
+                }
         
             }
             
-            // get its material
-            let materials = result.node.geometry!.materials//.firstMaterial!
-            
-            // highlight it
-            SCNTransaction.begin()
-            for material in materials {
-                if (material.emission.contents as! UIColor == UIColor.blue) {
-                    material.emission.contents = UIColor.black
-                    status = Status.none
-                }else if (material.emission.contents as! UIColor == UIColor.red) {
-                    break
-                }
-                else {
-                    material.emission.contents = UIColor.blue
-                    status = Status.select
-                }
-                
-            }
-            SCNTransaction.commit()
         }
     }
     
@@ -331,6 +344,8 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
          */
         object.setPosition(position, relativeTo: cameraTransform, smoothMovement: !isOnPlane)
     }
+    
+
 }
 
 /// Extends `UIGestureRecognizer` to provide the center point resulting from multiple touches.
@@ -348,7 +363,7 @@ extension UIGestureRecognizer {
 
 extension SCNNode {
     func rotateObject(degreesHorizontal: CGFloat, degreesVertical: CGFloat) {
-        let rotateAction1 = SCNAction.rotateBy(x: 0, y: CGFloat(degreesVertical * .pi / 180), z: CGFloat(degreesHorizontal * .pi / 180), duration: 0.01)
+        let rotateAction1 = SCNAction.rotateBy(x: 0, y: CGFloat(degreesVertical * .pi / -180), z: CGFloat(degreesHorizontal * .pi / 180), duration: 0.01)
         self.runAction(SCNAction.sequence([rotateAction1]))
         
     }
