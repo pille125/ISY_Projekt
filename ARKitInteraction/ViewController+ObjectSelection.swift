@@ -7,7 +7,6 @@ Methods on the main view controller for handling virtual object loading and move
 
 import UIKit
 import SceneKit
-import OpenGLES
 
 extension ViewController: VirtualObjectSelectionViewControllerDelegate {
     /**
@@ -44,9 +43,6 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate {
             
             self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = true
             self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)?.isHidden = true
-            
-            
-            
         }
     }
     func createLineNode(fromPos origin: SCNVector3, toPos destination: SCNVector3, color: UIColor) -> SCNNode {
@@ -77,11 +73,11 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate {
         let topRight = SCNVector3Make(max.x, max.y, zCoord)
         let bottomRight = SCNVector3Make(max.x, min.y, zCoord)
         
-        
-        let bottomSide = createLineNode(fromPos: bottomLeft, toPos: bottomRight, color: .blue)
-        let leftSide = createLineNode(fromPos: bottomLeft, toPos: topLeft, color: .blue)
-        let rightSide = createLineNode(fromPos: bottomRight, toPos: topRight, color: .blue)
-        let topSide = createLineNode(fromPos: topLeft, toPos: topRight, color: .blue)
+        let color = UIColor(red:0.00, green:0.59, blue:1.00, alpha:1.0)
+        let bottomSide = createLineNode(fromPos: bottomLeft, toPos: bottomRight, color: color)
+        let leftSide = createLineNode(fromPos: bottomLeft, toPos: topLeft, color: color)
+        let rightSide = createLineNode(fromPos: bottomRight, toPos: topRight, color: color)
+        let topSide = createLineNode(fromPos: topLeft, toPos: topRight, color: color)
         
         [bottomSide, leftSide, rightSide, topSide].forEach {
             $0.name = "highlightedNode"// Whatever name you want so you can unhighlight later if needed
@@ -97,11 +93,11 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate {
         let topRight = SCNVector3Make(max.x + val, max.y + val, zCoord)
         let bottomRight = SCNVector3Make(max.x + val, min.y - val, zCoord)
         
-        
-        let bottomSide = createLineNode(fromPos: bottomLeft, toPos: bottomRight, color: .blue)
-        let leftSide = createLineNode(fromPos: bottomLeft, toPos: topLeft, color: .blue)
-        let rightSide = createLineNode(fromPos: bottomRight, toPos: topRight, color: .blue)
-        let topSide = createLineNode(fromPos: topLeft, toPos: topRight, color: .blue)
+        let color = UIColor(red:0.00, green:0.59, blue:1.00, alpha:1.0)
+        let bottomSide = createLineNode(fromPos: bottomLeft, toPos: bottomRight, color: color)
+        let leftSide = createLineNode(fromPos: bottomLeft, toPos: topLeft, color: color)
+        let rightSide = createLineNode(fromPos: bottomRight, toPos: topRight, color: color)
+        let topSide = createLineNode(fromPos: topLeft, toPos: topRight, color: color)
         
         [bottomSide, leftSide, rightSide, topSide].forEach {
             $0.name = "highlightedNode"// Whatever name you want so you can unhighlight later if needed

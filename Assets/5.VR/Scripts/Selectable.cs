@@ -7,8 +7,15 @@ namespace SAP.VR.Interaction
 {
     public class Selectable : MonoBehaviour
     {
-		public Material outline;
+		//public Material outline;
         // Use this for initialization
+
+		public enum SelectableType { selectable, uiButton }
+
+		public Material label;
+		public Material labelSelected;
+
+		public SelectableType type;
 
 		public bool selected;
 
@@ -24,7 +31,8 @@ namespace SAP.VR.Interaction
         {
 
         }
-
+		public GameObject outline;
+		public int outlineArrayPosition;
 		void OnTriggerEnter(Collider collider) {
 			if(collider.tag.Equals("LeftIndex") || collider.tag.Equals("RightIndex" )) {
 				if(collider.tag.Equals("RightIndex" )) {
@@ -40,12 +48,18 @@ namespace SAP.VR.Interaction
 
 				if(!selected) {
 					selected = true;
-					GetComponent<Renderer>().materials[1].SetFloat("_Outline", 0.07f );
+					if(type == SelectableType.selectable) outline.SetActive(true);
+					else if(type == SelectableType.uiButton) {
+						
+					}
 					toolbelt(true);
 				}
 				else {
 					selected = false;
-					GetComponent<Renderer>().materials[1].SetFloat("_Outline", 0 );
+					if(type == SelectableType.selectable)  outline.SetActive(false);
+					else if(type == SelectableType.uiButton) {
+
+					}
 					toolbelt(false);
 				}
 			}

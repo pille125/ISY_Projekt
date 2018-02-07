@@ -9,6 +9,7 @@ namespace SAP.VR.General {
 
         public bool disableGrab = false;
         public bool objectGrabbed = false;
+        public GameObject grabbedObject;
         public enum HandState { idle, pointing, fist }
 
         public HandState leftHandState;
@@ -24,7 +25,7 @@ namespace SAP.VR.General {
         // Use this for initialization
         void Start() {
             //set to Roomscale
-            VRDevice.SetTrackingSpaceType(TrackingSpaceType.RoomScale);
+            UnityEngine.XR.XRDevice.SetTrackingSpaceType(UnityEngine.XR.TrackingSpaceType.RoomScale);
         }
 
         // Update is called once per frame
@@ -40,11 +41,11 @@ namespace SAP.VR.General {
             if (leftHand != null || rightHand != null)
             {
 
-                leftHand.position = InputTracking.GetLocalPosition(VRNode.LeftHand);
-                leftHand.rotation = InputTracking.GetLocalRotation(VRNode.LeftHand);
+                leftHand.position = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.LeftHand);
+                leftHand.rotation = UnityEngine.XR.InputTracking.GetLocalRotation(UnityEngine.XR.XRNode.LeftHand);
 
-                rightHand.position = InputTracking.GetLocalPosition(VRNode.RightHand);
-                rightHand.rotation = InputTracking.GetLocalRotation(VRNode.RightHand);
+                rightHand.position = UnityEngine.XR.InputTracking.GetLocalPosition(UnityEngine.XR.XRNode.RightHand);
+                rightHand.rotation = UnityEngine.XR.InputTracking.GetLocalRotation(UnityEngine.XR.XRNode.RightHand);
             }
         }
 

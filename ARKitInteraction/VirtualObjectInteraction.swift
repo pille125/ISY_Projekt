@@ -54,25 +54,19 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
         panGesture.delegate = self
         
         let resizeGesture = UIPinchGestureRecognizer(target: self, action: #selector(didResize(_:)))
-        //resizeGesture.delegate = self
+        
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        //tapGesture.delegate = self
         
         let doubleTapGesture = UITapGestureRecognizer(target: self, action: #selector(didDoubleTap(_:)))
         doubleTapGesture.numberOfTapsRequired = 2
-        
-        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
-        
-        
-        
         
         // Add gestures to the `sceneView`.
         sceneView.addGestureRecognizer(panGesture)
         sceneView.addGestureRecognizer(resizeGesture)
         sceneView.addGestureRecognizer(tapGesture)
         sceneView.addGestureRecognizer(doubleTapGesture)
-        sceneView.addGestureRecognizer(longPressGesture)
-        
     }
     
     // MARK: - Gesture Actions
@@ -89,7 +83,6 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 if let object = objectInteracting(with: gesture, in: sceneView) {
                     trackedObject = object
                 }
-                
             case .changed where gesture.isThresholdExceeded:
                 print("move")
                 guard let object = trackedObject else { return }
@@ -125,7 +118,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                 guard let object = trackedObject else { return }
                 let translation = gesture.translation(in: self.sceneView)
                 let degreesHorizontal = CGFloat(0)//translation.x / CGFloat(90)
-                let degreessVertical = (translation.y / CGFloat(10))
+                let degreessVertical = (translation.y / CGFloat(4))
                 object.rotateObject(degreesHorizontal: degreesHorizontal, degreesVertical: degreessVertical)
                 
             default:
@@ -141,6 +134,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
             //do nothing
             break
         }
+        
     }
     
 
@@ -158,34 +152,17 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
         guard let object = trackedObject, let position = currentTrackingPosition else { return }
         translate(object, basedOn: position, infinitePlane: translateAssumingInfinitePlane)
     }
-
-    /// - Tag: didRotate
-    @objc
-    func didRotate(_ gesture: UIRotationGestureRecognizer) {
-        guard gesture.state == .changed else { return }
-        
-        /*
-         - Note:
-          For looking down on the object (99% of all use cases), we need to subtract the angle.
-          To make rotation also work correctly when looking from below the object one would have to
-          flip the sign of the angle depending on whether the object is above or below the camera...
-         */
-        print("rotategesture")
-        print(Float(gesture.rotation))
-        trackedObject?.eulerAngles.y -= Float(gesture.rotation)
-        
-        gesture.rotation = 0
-    }
     
     @objc
     func didTap(_ gesture: UITapGestureRecognizer) {
         let touchLocation = gesture.location(in: sceneView)
-        
+        print("single tap")
         let hitResults = sceneView.hitTest(touchLocation, options: [:])
         // check that we clicked on at least one object
         if hitResults.count > 0 {
             // retrieved the first clicked object
             let result = hitResults[0]
+            
             if let tappedObject = sceneView.virtualObject(at: touchLocation) {
                 if tappedObject.childNode(withName: "rotateButton", recursively: true) == result.node {
                     print("rotate pressed")
@@ -239,7 +216,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
                         }else if (material.emission.contents as! UIColor == UIColor.red) {
                             break
                         }
-                        else if (material.emission.contents as! UIColor == UIColor.black){
+                        else {
                             material.emission.contents = UIColor.blue
                             status = Status.select
                             self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = false
@@ -260,7 +237,7 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
     @objc
     func didDoubleTap(_ gesture: UITapGestureRecognizer) {
         let touchLocation = gesture.location(in: sceneView)
-        
+        print("double tap")
         let hitResults = sceneView.hitTest(touchLocation, options: [:])
         // check that we clicked on at least one object
         if hitResults.count > 0 {
@@ -286,26 +263,17 @@ class VirtualObjectInteraction: NSObject, UIGestureRecognizerDelegate {
     }
     
     @objc
-    func didLongPress(_ gesture: UILongPressGestureRecognizer) {
-        if status == Status.select {
-            status = Status.none
-        }else {
-            status = Status.select
-        }
-    }
-    
-    @objc
     func didResize(_ gesture: UIPinchGestureRecognizer) {
         print("scale before")
         guard let object = selectedObject else { return }
         print("scale after")
         print(gesture.scale)
-        let scale = Float(gesture.scale / 10)
-        let currentScale = object.scale.x
-        let newScale = scale / currentScale
-        object.scale.x = newScale
-        object.scale.y = newScale
-        object.scale.z = newScale
+
+        let pinchScaleX = Float(gesture.scale) * object.scale.x
+        let pinchScaleY =  Float(gesture.scale) * object.scale.y
+        let pinchScaleZ =  Float(gesture.scale) * object.scale.z
+        object.scale = SCNVector3(pinchScaleX, pinchScaleY, pinchScaleZ)
+        gesture.scale=1
     }
     
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
@@ -363,7 +331,7 @@ extension UIGestureRecognizer {
 
 extension SCNNode {
     func rotateObject(degreesHorizontal: CGFloat, degreesVertical: CGFloat) {
-        let rotateAction1 = SCNAction.rotateBy(x: 0, y: CGFloat(degreesVertical * .pi / -180), z: CGFloat(degreesHorizontal * .pi / 180), duration: 0.01)
+        let rotateAction1 = SCNAction.rotateBy(x: 0, y: CGFloat(degreesVertical * .pi / 180), z: CGFloat(degreesHorizontal * .pi / 180), duration: 0.01)
         self.runAction(SCNAction.sequence([rotateAction1]))
         
     }

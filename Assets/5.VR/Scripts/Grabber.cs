@@ -21,7 +21,7 @@ namespace SAP.VR.Interaction
 
         private Animator handAnim;
 
-        bool grabbed = false;
+        public bool grabbed = false;
 
 
         // Use this for initialization
@@ -35,6 +35,8 @@ namespace SAP.VR.Interaction
     
         public VR_System.HandState lastRightHandState;
         public VR_System.HandState lastLeftHandState;
+
+        public GameObject grabbedObject;
 
         // Update is called once per frame
         void Update()
@@ -77,13 +79,16 @@ namespace SAP.VR.Interaction
                 }
             }
             if(vrSys.disableGrab) return;
-            if (heldObj != null)
+            if (vrSys.objectGrabbed)
             {
                 if (vrSys.leftHandState == VR_System.HandState.fist && vrSys.leftHandState == VR_System.HandState.fist) { 
                     scale();                   
                 }
                 else {
-                    if(!firstScale) firstScale = true;
+                    if(!firstScale) {
+                        firstScale = true;
+                        
+                    }
                 }
             }
             else {
@@ -97,11 +102,14 @@ namespace SAP.VR.Interaction
             if(vrSys.disableGrab) return;
             //other.GetComponent<Rigidbody>().useGravity = false;
             //obj has to have a rigidbody and only colliding object
-            if (collidingObj != null || !other.GetComponent<Rigidbody>() || !other.GetComponent<Rigidbody>().useGravity)
+            if (collidingObj != null || !other.GetComponent<Rigidbody>()|| !other.GetComponent<Rigidbody>().useGravity)
             {
                 return;
             }
+            
             collidingObj = other.gameObject;
+            
+
         }
 
         private void OnTriggerStay(Collider other)
@@ -145,6 +153,7 @@ namespace SAP.VR.Interaction
             heldObj.transform.parent = this.transform;
             grabbed = true;
             vrSys.objectGrabbed = true;
+            vrSys.grabbedObject = heldObj;
         }
 
 
@@ -171,6 +180,7 @@ namespace SAP.VR.Interaction
             heldObj = null;
             grabbed = false;
             vrSys.objectGrabbed = false;
+            vrSys.grabbedObject = null;
         }
 
         bool firstScale = true;
@@ -184,7 +194,8 @@ namespace SAP.VR.Interaction
             }
             float newDistance = Vector3.Distance(vrSys.leftHand.position, vrSys.rightHand.position);
             float scaleFactor =  newDistance - lastDistance; 
-            heldObj.transform.localScale = new Vector3(heldObj.transform.localScale.x + scaleFactor, heldObj.transform.localScale.y+ scaleFactor, heldObj.transform.localScale.z+ scaleFactor);
+            scaleFactor *= 10;
+            vrSys.grabbedObject.transform.localScale = new Vector3(vrSys.grabbedObject.transform.localScale.x + scaleFactor , vrSys.grabbedObject.transform.localScale.y+ scaleFactor, vrSys.grabbedObject.transform.localScale.z+ scaleFactor);
             lastDistance = newDistance;
         }
     }

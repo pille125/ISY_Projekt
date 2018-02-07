@@ -14,6 +14,7 @@ public class Rotater : MonoBehaviour {
 	}
 	public Transform grabableObject;
 
+	public Transform rotatorGraphic;
 	// Update is called once per frame
 	void Update () {
 		if(vrSys.objectGrabbed) return;
@@ -68,7 +69,8 @@ public class Rotater : MonoBehaviour {
 
 		newX = _rotateHelper.localPosition.z;
 		nextX = newX - lastX;
-		grabableObject.transform.localEulerAngles = new Vector3(0, grabableObject.transform.eulerAngles.y  + nextX * rotateFactor, 0); 
+		grabableObject.transform.localEulerAngles = new Vector3( grabableObject.transform.eulerAngles.x, grabableObject.transform.eulerAngles.y, grabableObject.transform.eulerAngles.z  + nextX * rotateFactor); 
+		rotatorGraphic.transform.localEulerAngles = new Vector3(0, rotatorGraphic.transform.eulerAngles.y  + nextX * rotateFactor, 0);
 		lastX = newX;
 	}
 
