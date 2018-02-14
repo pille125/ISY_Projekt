@@ -29,20 +29,20 @@ extension ViewController: VirtualObjectSelectionViewControllerDelegate {
         updateQueue.async {
             self.sceneView.scene.rootNode.addChildNode(virtualObject)
         
-            self.sceneView.scene.rootNode.childNode(withName: "rotateButton", recursively: true)?.isHidden = true
-            self.sceneView.scene.rootNode.childNode(withName: "rotateButtonPlane", recursively: true)?.isHidden = true
-            var val:Float = 0.0
-            for _ in 0..<10 {
-                self.highlightNode2(self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)!, val: val)
-                self.highlightNode2(self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)!, val: val)
-                val = val + 0.0001
-            }
-            let textGeometry = self.sceneView.scene.rootNode.childNode(withName: "infoText", recursively: true)
-            let text = textGeometry?.geometry as! SCNText
-            text.string = "Cornflakes \nHere we can Display all kinds of \ninformation like the nutrition or \nexpiration date and other stuff"
+//            self.sceneView.scene.rootNode.childNode(withName: "rotateButton", recursively: true)?.isHidden = true
+//            self.sceneView.scene.rootNode.childNode(withName: "rotateButtonPlane", recursively: true)?.isHidden = true
+//            var val:Float = 0.0
+//            for _ in 0..<10 {
+//              //  self.highlightNode2(self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)!, val: val)
+//                //self.highlightNode2(self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)!, val: val)
+//                val = val + 0.0001
+//            }
+//            let textGeometry = self.sceneView.scene.rootNode.childNode(withName: "infoText", recursively: true)
+//            let text = textGeometry?.geometry as! SCNText
+//            text.string = "Cornflakes \nHere we can Display all kinds of \ninformation like the nutrition or \nexpiration date and other stuff"
             
-            self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = true
-            self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)?.isHidden = true
+//            self.sceneView.scene.rootNode.childNode(withName: "buttonPlane", recursively: true)?.isHidden = true
+//            self.sceneView.scene.rootNode.childNode(withName: "textBox", recursively: true)?.isHidden = true
         }
     }
     func createLineNode(fromPos origin: SCNVector3, toPos destination: SCNVector3, color: UIColor) -> SCNNode {

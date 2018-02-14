@@ -12,7 +12,7 @@ import ARKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-	var window: UIWindow? = MBFingerTipWindow(frame: UIScreen.main.bounds)
+	var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         guard ARWorldTrackingConfiguration.isSupported else {
